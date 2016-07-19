@@ -11,4 +11,10 @@ class Result extends Model
       return $this->belongsTo('App\User', 'assigned_to');
     }
     
+    public function match()
+    {
+      return $this->belongsTo('App\Match');
+    }
+    
+    
 }

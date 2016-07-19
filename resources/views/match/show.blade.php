@@ -54,10 +54,12 @@
           {{ Form::hidden('opponent_id', $opponent->id) }}
 				  {{ Form::text('challenger_games') }}<br>
 				  {{ Form::text('opponent_games') }}<br>
+				  {{ Form::hidden('total_games', '0') }}
           {{ Form::submit('Create') }}
         {{ Form::close() }}
         
         @endif
+        
         
         
       </div>

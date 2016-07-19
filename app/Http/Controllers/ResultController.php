@@ -39,6 +39,14 @@ class ResultController extends Controller
     public function store(Request $request)
     {
         
+        $this->validate($request, [
+            'challenger_games' => 'required|integer',
+            'opponent_games' => 'required|integer',
+            'total_games' => 'required|integer|size:15'
+        ]);
+        
+        
+        
         $user = Auth::user();
         $challengerResult = new Result;
         $challengerResult->points = $request->challenger_games;

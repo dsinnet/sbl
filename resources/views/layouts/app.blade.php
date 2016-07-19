@@ -49,6 +49,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
                     <li><a href="{{ url('/match') }}">Matches</a></li>
+                    <li><a href="{{ url('/leaderboard') }}">Leaderboard</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -72,12 +73,33 @@
             </div>
         </div>
     </nav>
-
+    @if (count($errors) > 0)
+    <div class="container">
+      <div class="row">
+        <div class="alert alert-danger">
+          <ul>
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      </div>
+    </div>
+    @endif
+    
     @yield('content')
 
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+    
+    <script>
+      $(document).ready(function() {
+        var totalGames = $("input[name=challenger_games]").val() + $("input[name=opponent_games]").val();
+        $("input[name=total_games]").val(totalGames);
+        console.log($("input[name=total_games]").val());
+      });
+    </script>
 </body>
 </html>
