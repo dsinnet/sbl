@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use Illuminate\Http\Request;
 use App\Result;
+use App\User;
 use App\Http\Requests;
 
 class ResultController extends Controller
@@ -57,6 +58,34 @@ class ResultController extends Controller
 
         return redirect()->route('match.show', ['id' => $request->match_id]);
     }
+
+			/**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function leaderboard()
+    {
+        // Get all users as Players
+        $players = User::with('results')->get();
+				
+				foreach($players as $player) {
+				
+					$score = 0;
+					foreach($player->results as $result){
+						$score = $score + $result->points;
+					}
+					// $score = count($score);
+					$player->score = $score;
+				}
+				// dd($players);
+
+				// dd($players);
+				return view('result.leaderboard', compact('players'));
+    }		
+    
+
+
 
     /**
      * Display the specified resource.

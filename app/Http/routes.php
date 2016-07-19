@@ -13,7 +13,6 @@
 
 Route::get('/', function () {
     return view('welcome');
-
 });
 
 Route::auth();
@@ -24,3 +23,4 @@ Route::resource('match', 'MatchController');
 Route::resource('result', 'ResultController');
 
 Route::post('/result/confirm/{id}', 'MatchController@confirm');
+Route::get('/leaderboard', 'ResultController@leaderboard');

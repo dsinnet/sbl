@@ -19,7 +19,13 @@ class MatchController extends Controller
      */
     public function index()
     {
-        //
+			$user = Auth::user();
+      
+      $madeChallenges = Match::with('challenger', 'opponent')->where('challenger_id', $user->id)->get();
+      $receivedChallenges = Match::with('challenger', 'opponent')->where('opponent_id', $user->id)->get();
+      $matches = Match::with('challenger', 'opponent')->get();
+                      
+      return view('match.index', compact('matches', 'madeChallenges', 'receivedChallenges'));    
     }
 
     /**
@@ -29,8 +35,8 @@ class MatchController extends Controller
      */
     public function create()
     {
-        $items = User::pluck('name', 'id');
-        // dd($items);
+        $items = User::pluck('name', 'id')->except(Auth::id());
+
         return view('match.create', compact('items'));
     }
 
@@ -42,8 +48,6 @@ class MatchController extends Controller
      */
     public function store(Request $request)
     {
-       
-// dd($request->opponent_id);       
         $user = Auth::user();
 
         $opponent = User::find($request->opponent_id);
@@ -55,8 +59,6 @@ class MatchController extends Controller
         
         $match->save();
         
-
-
         Mail::send('emails.invite', ['user' => $user, 'opponent' => $opponent], function ($m) use ($user, $opponent) {
             $m->from($user->email, 'Your Application');
 
@@ -106,7 +108,12 @@ class MatchController extends Controller
       foreach($results as $result) {
         $result->status = 'confirmed';
         $result->save();
-      }  
+      } 
+      
+      $match = Match::find($request->match_id);
+      $match->status = 'Result';
+      $match->save();
+      
       return redirect()->route('match.show', ['id' => $request->match_id]);
     }
     

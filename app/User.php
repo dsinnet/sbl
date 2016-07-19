@@ -29,8 +29,10 @@ class User extends Authenticatable
       return $this->hasMany('App\Matches', 'id', 'challenger');
     }
     
-    protected function results()
+    public function results()
     {
-      return $this->hasMany('App\Result');
+      return $this->hasMany('App\Result', 'assigned_to');
     }
+    
+    
 }
