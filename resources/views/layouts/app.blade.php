@@ -95,11 +95,21 @@
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
     
     <script>
-      $(document).ready(function() {
-        var totalGames = $("input[name=challenger_games]").val() + $("input[name=opponent_games]").val();
-        $("input[name=total_games]").val(totalGames);
-        console.log($("input[name=total_games]").val());
-      });
+    
+    	
+    //	$( "input[name=challenger_games]" ).change(function() {
+		//	  var challengerGames = $("input[name=challenger_games]").val();
+		//		var opponentGames = 15 - challengerGames;
+		//	  $("input[name=opponent_games]").val(opponentGames)
+		//	  // alert( "Handler for .change() called." );
+		//	  
+		//	});
+    //
+    //  $(document).ready(function() {
+    //    var totalGames = $("input[name=challenger_games]").val() + $("input[name=opponent_games]").val();
+    //    $("input[name=total_games]").val(totalGames);
+    //    console.log($("input[name=total_games]").val());
+    //  });
     </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Result;
 use App\User;
 use App\Http\Requests;
+use Validator;
 
 class ResultController extends Controller
 {
@@ -39,12 +40,27 @@ class ResultController extends Controller
     public function store(Request $request)
     {
         
-        $this->validate($request, [
-            'challenger_games' => 'required|integer',
-            'opponent_games' => 'required|integer',
-            'total_games' => 'required|integer|size:15'
-        ]);
+        // $this->validate($request, [
+        //     'challenger_games' => 'required|integer',
+        //     'opponent_games' => 'required|integer',
+        //     'total_games' => 'required|integer|size:15'
+        // ]);
         
+				$totalGames = $request->challenger_games + $request->opponent_games;
+				$data = array('totalGames' => $totalGames);
+				
+        $validator = Validator::make($data, [
+           'totalGames' => 'required|integer|size:15'
+           // 'challenger_games' => 'required|integer',
+           // 'opponent_games' => 'required|integer'
+        ]);
+				
+
+        if ($validator->fails()) {
+            return redirect('/match')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
         
         
         $user = Auth::user();
