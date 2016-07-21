@@ -40,24 +40,25 @@ class ResultController extends Controller
     public function store(Request $request)
     {
         
-        // $this->validate($request, [
-        //     'challenger_games' => 'required|integer',
-        //     'opponent_games' => 'required|integer',
-        //     'total_games' => 'required|integer|size:15'
-        // ]);
+        $this->validate($request, [
+            'challenger_games' => 'required|integer',
+            'opponent_games' => 'required|integer',
+        ]);
         
+				// Establish the total number of games
 				$totalGames = $request->challenger_games + $request->opponent_games;
+				
+				// Assign number of games to an array which the Validator expects
 				$data = array('totalGames' => $totalGames);
 				
+				//Create the validator object and pass in the variable
         $validator = Validator::make($data, [
            'totalGames' => 'required|integer|size:15'
-           // 'challenger_games' => 'required|integer',
-           // 'opponent_games' => 'required|integer'
         ]);
 				
-
+				// Generate the errors
         if ($validator->fails()) {
-            return redirect('/match')
+            return redirect('/match/' . $request->match_id)
                         ->withErrors($validator)
                         ->withInput();
         }

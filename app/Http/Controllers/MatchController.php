@@ -61,11 +61,11 @@ class MatchController extends Controller
         
         Mail::send('emails.invite', ['user' => $user, 'opponent' => $opponent], function ($m) use ($user, $opponent) {
             $m->from($user->email, 'Your Application');
-
             $m->to($opponent->email, $opponent->name)->subject('You\'ve been challenged');
         });
         
-        return redirect('home');
+        $request->session()->flash('alert-success', 'Match created!');
+        return redirect('/match/' . $match->id);
     }
 
     /**
