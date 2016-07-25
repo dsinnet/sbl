@@ -22,5 +22,7 @@ Route::get('/home', 'HomeController@index');
 Route::resource('match', 'MatchController');
 Route::resource('result', 'ResultController');
 
+Route::get('/challenge/{opponent}', 'MatchController@challenge');
+
 Route::post('/result/confirm/{id}', 'MatchController@confirm');
 Route::get('/leaderboard', 'ResultController@leaderboard');

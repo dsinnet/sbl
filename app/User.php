@@ -34,5 +34,26 @@ class User extends Authenticatable
       return $this->hasMany('App\Result', 'assigned_to');
     }
     
+    public function getPlayerScore()
+    {
+	    $score = 0;
+			foreach($this->results as $result){
+				$score = $score + $result->points;
+			}
+			return $score;
+    }
     
+    public function getPlayerRating()
+    {  
+    
+    	if($this->results()->count() > 3){
+	    	return $this->getPlayerScore() / $this->results()->count();
+    	} else {
+	    	return 'UQ';
+    	}
+	    
+			
+    }
+    
+  
 }

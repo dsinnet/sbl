@@ -73,6 +73,7 @@
             </div>
         </div>
     </nav>
+    
     @if (count($errors) > 0)
     <div class="container">
       <div class="row">
@@ -87,6 +88,15 @@
     </div>
     @endif
     
+    <div class="flash-message">
+    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+      @if(Session::has('alert-' . $msg))
+
+      <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
+      @endif
+    @endforeach
+	  </div> <!-- end .flash-message -->
+    
     @yield('content')
 
     <!-- JavaScripts -->
@@ -94,22 +104,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
     
-    <script>
-    
-    	
-    //	$( "input[name=challenger_games]" ).change(function() {
-		//	  var challengerGames = $("input[name=challenger_games]").val();
-		//		var opponentGames = 15 - challengerGames;
-		//	  $("input[name=opponent_games]").val(opponentGames)
-		//	  // alert( "Handler for .change() called." );
-		//	  
-		//	});
-    //
-    //  $(document).ready(function() {
-    //    var totalGames = $("input[name=challenger_games]").val() + $("input[name=opponent_games]").val();
-    //    $("input[name=total_games]").val(totalGames);
-    //    console.log($("input[name=total_games]").val());
-    //  });
-    </script>
+ 
 </body>
 </html>

@@ -23,4 +23,5 @@ class Match extends Model
     {
       return $this->belongsTo('App\User', 'opponent_id', 'id');
     }
+
 }

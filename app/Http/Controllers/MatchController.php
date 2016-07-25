@@ -39,6 +39,12 @@ class MatchController extends Controller
 
         return view('match.create', compact('items'));
     }
+    
+    public function challenge($opponent)
+    {
+				$opponent = User::find($opponent);
+        return view('match.challenge', compact('opponent'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -51,22 +57,33 @@ class MatchController extends Controller
         $user = Auth::user();
 
         $opponent = User::find($request->opponent_id);
-        
-        $match = new Match;
-        $match->status = 'Challenge';
-        $match->opponent_id = $request->opponent_id;
-        $match->challenger_id = $user->id;
-        
-        $match->save();
-        
-        Mail::send('emails.invite', ['user' => $user, 'opponent' => $opponent], function ($m) use ($user, $opponent) {
-            $m->from($user->email, 'Your Application');
-
-            $m->to($opponent->email, $opponent->name)->subject('You\'ve been challenged');
-        });
-        
-        return redirect('home');
+                
+        if($opponent->index <= $user->index+config('settings.challengeVariant') && $opponent->index >= $user->index-config('settings.challengeVariant')) {
+	        $match = new Match;
+	        $match->status = 'Challenge';
+	        $match->opponent_id = $request->opponent_id;
+	        $match->challenger_id = $user->id;
+	        
+	        $match->save();
+	        
+	        Mail::send('emails.invite', ['user' => $user, 'opponent' => $opponent], function ($m) use ($user, $opponent) {
+	            $m->from($user->email, 'Your Application');
+					
+	            $m->to($opponent->email, $opponent->name)->subject('You\'ve been challenged');
+	        });
+	        
+	        $request->session()->flash('alert-success', 'Success');
+	        return redirect('home');
+	        
+        } else {
+	        $request->session()->flash('alert-warning', 'Failed - You can only challenge a player up to two places above or below you');
+	        return redirect('home');
+        }
+                
     }
+    
+    // Create alternative store function to receive direct requests from the leaderboard
+    
 
     /**
      * Display the specified resource.
@@ -104,16 +121,35 @@ class MatchController extends Controller
 
     public function confirm($id, Request $request)
     {
+      // Get the match
       $results = Result::where('match_id', $request->match_id)->get();
+      
       foreach($results as $result) {
+      	
+      	// Update the result status
         $result->status = 'confirmed';
         $result->save();
+        
+        // Get the user and set the rating
+				$player = User::find($result->assigned_to);
+				$player->rating = $player->getPlayerRating();
+				$player->save();
+        
       } 
       
+      // Get all players and set an index based on revised player rating
+      $players = User::orderBy('rating')->get();
+      $index = 0;
+      foreach($players as $player){
+ 	      $player->index = $index++;
+	      $player->save();
+      }
+      
+      // Update the match status
       $match = Match::find($request->match_id);
       $match->status = 'Result';
       $match->save();
-      
+     
       return redirect()->route('match.show', ['id' => $request->match_id]);
     }
     

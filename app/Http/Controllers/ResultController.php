@@ -40,21 +40,12 @@ class ResultController extends Controller
     public function store(Request $request)
     {
         
-        // $this->validate($request, [
-        //     'challenger_games' => 'required|integer',
-        //     'opponent_games' => 'required|integer',
-        //     'total_games' => 'required|integer|size:15'
-        // ]);
-        
 				$totalGames = $request->challenger_games + $request->opponent_games;
 				$data = array('totalGames' => $totalGames);
 				
         $validator = Validator::make($data, [
            'totalGames' => 'required|integer|size:15'
-           // 'challenger_games' => 'required|integer',
-           // 'opponent_games' => 'required|integer'
         ]);
-				
 
         if ($validator->fails()) {
             return redirect('/match')
@@ -90,22 +81,23 @@ class ResultController extends Controller
      */
     public function leaderboard()
     {
+        // Get user
+        $user = Auth::user();
+        
         // Get all users as Players
         $players = User::with('results')->get();
 				
 				foreach($players as $player) {
-				
-					$score = 0;
-					foreach($player->results as $result){
-						$score = $score + $result->points;
-					}
-					// $score = count($score);
-					$player->score = $score;
+										
+					$player->score = $player->getPlayerScore();
+					$player->matches = $player->results()->count();
+	
 				}
-				// dd($players);
+				
+				$players = $players->except(['rating', 'UQ'])->sortByDesc('rating');
 
-				// dd($players);
-				return view('result.leaderboard', compact('players'));
+				
+				return view('result.leaderboard', compact('players', 'user'));
     }		
     
 
