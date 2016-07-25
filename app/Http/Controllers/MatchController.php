@@ -72,8 +72,8 @@ class MatchController extends Controller
 	            $m->to($opponent->email, $opponent->name)->subject('You\'ve been challenged');
 	        });
 	        
-	        $request->session()->flash('alert-success', 'Success');
-	        return redirect('home');
+	        $request->session()->flash('alert-success', 'Match created!');
+        	return redirect('/match/' . $match->id);
 	        
         } else {
 	        $request->session()->flash('alert-warning', 'Failed - You can only challenge a player up to two places above or below you');
@@ -93,7 +93,7 @@ class MatchController extends Controller
      */
     public function show($id)
     {
-    	$user = Auth::user();
+      $user = Auth::user();
       $match = Match::where('id', $id)->firstOrFail();
       $challenger = User::find($match->challenger_id);
       $opponent = User::find($match->opponent_id);
