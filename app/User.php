@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'rating',
     ];
 
     /**
@@ -45,15 +45,14 @@ class User extends Authenticatable
     
     public function getPlayerRating()
     {  
-    
     	if($this->results()->count() > 3){
 	    	return $this->getPlayerScore() / $this->results()->count();
     	} else {
 	    	return 'UQ';
-    	}
-	    
-			
+    	}			
     }
+    
+    
     
   
 }
